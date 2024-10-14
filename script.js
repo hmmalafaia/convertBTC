@@ -3,15 +3,24 @@ async function buscaPreco() {
     const btcUsdInput = document.getElementById('inputUSD');
 
     try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl');
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl,usd');
         const data = await response.json();
         const bitcoinPriceBRL
             = data.bitcoin.brl;
+
+        const bitcoinPriceUSD
+            = data.bitcoin.usd;
 
 
         btcBrlValue = bitcoinPriceBRL;
         btcBrl.value = btcBrlValue;
         btcBrl.disabled = true;
+
+        btcUsdValue = bitcoinPriceUSD;
+        btcUsd.value = btcUsdValue;
+        btcUsd.disabled = true;
+
+
 
 
     } catch (error) {
@@ -54,27 +63,27 @@ async function converter(campo) {
     if (campo === 'satoshis') {
         const bitcoin = satoshisInput.value / 100000000;
         bitcoinInput.value = bitcoin.toFixed(8);
-        brlInput.value = btcBrl.value * bitcoinInput.value;
-        usdInput.value = brlInput.value / usd.value;
+        brlInput.value = (btcBrl.value * bitcoinInput.value).toFixed(2);
+        usdInput.value = (brlInput.value / usd.value).toFixed(2);
 
     } else if (campo === 'bitcoin') {
         const bitcoin = parseFloat(bitcoinInput.value);
         const satoshis = bitcoin * satoshisPorBitcoin;
-        satoshisInput.value = satoshis;
+        satoshisInput.value = satoshis.toFixed(0);
         brlInput.value = (bitcoinInput.value * btcBrl.value).toFixed(2);
         usdInput.value = (brlInput.value / usd.value).toFixed(2);
 
 
     } else if (campo === 'brl') {
         bitcoinInput.value = brlInput.value / btcBrl.value;
-        satoshisInput.value = bitcoinInput.value * satoshisPorBitcoin;
-        usdInput.value = brlInput.value / usd.value;
+        satoshisInput.value = (bitcoinInput.value * satoshisPorBitcoin).toFixed(0);
+        usdInput.value = (brlInput.value / usd.value).toFixed(2);
 
 
     } else if (campo === 'usd') {
         bitcoinInput.value = usdInput.value / ((btcBrl.value / usd.value));
-        satoshisInput.value = bitcoinInput.value * satoshisPorBitcoin;
-        brlInput.value = bitcoinInput.value * btcBrl.value;
+        satoshisInput.value = (bitcoinInput.value * satoshisPorBitcoin).toFixed(0);
+        brlInput.value = (bitcoinInput.value * btcBrl.value).toFixed(2);
     }
 
 
