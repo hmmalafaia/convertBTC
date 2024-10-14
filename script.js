@@ -1,5 +1,5 @@
 async function buscaPreco() {
-    const btcBrlInput = document.getElementById('btcBrl');
+    const btcBrl = document.getElementById('btcBrl');
     const btcUsdInput = document.getElementById('inputUSD');
 
     try {
@@ -10,13 +10,13 @@ async function buscaPreco() {
 
 
         btcBrlValue = bitcoinPriceBRL;
-        btcBrlInput.value = btcBrlValue;
-        btcBrlInput.disabled = true;
+        btcBrl.value = btcBrlValue;
+        btcBrl.disabled = true;
 
 
     } catch (error) {
         console.error('Error fetching Bitcoin price in BRL:', error);
-        btcBrlInput.value = -1;
+        btcBrl.value = -1;
         btcUsdInput.value = -1;
 
     }
@@ -48,42 +48,33 @@ async function converter(campo) {
     const bitcoinInput = document.getElementById('bitcoin');
     const brlInput = document.getElementById('brl');
     const usdInput = document.getElementById('usd');
-    const btcBrlInput = document.getElementById('btcBrl');
+    const btcBrl = document.getElementById('btcBrl');
     const usd = document.getElementById('inputUSD');
 
     if (campo === 'satoshis') {
-        const satoshis = parseFloat(satoshisInput.value);
-        const bitcoin = satoshis / 100000000;
-        bitcoinInput.value = bitcoin;
-        brlInput.value = btcBrlInput.value * bitcoinInput.value;
-        usdInput.value = brlInput.value * usd.value;
+        const bitcoin = satoshisInput.value / 100000000;
+        bitcoinInput.value = bitcoin.toFixed(8);
+        brlInput.value = btcBrl.value * bitcoinInput.value;
+        usdInput.value = brlInput.value / usd.value;
 
     } else if (campo === 'bitcoin') {
         const bitcoin = parseFloat(bitcoinInput.value);
         const satoshis = bitcoin * satoshisPorBitcoin;
         satoshisInput.value = satoshis;
-        brlInput.value = bitcoinInput.value * btcBrlInput;
-        usdInput.value = brlInput.value * 5.5;
+        brlInput.value = (bitcoinInput.value * btcBrl.value).toFixed(2);
+        usdInput.value = (brlInput.value / usd.value).toFixed(2);
 
 
     } else if (campo === 'brl') {
-        const brl = parseFloat(brlInput.value);
-        const bitcoin = brl / btcBrlInput;
-        bitcoinInput.value = bitcoin;
-        const satoshis = bitcoin * satoshisPorBitcoin;
-        satoshisInput.value = satoshis;
-        usdInput.value = brlInput.value * 5.5;
+        bitcoinInput.value = brlInput.value / btcBrl.value;
+        satoshisInput.value = bitcoinInput.value * satoshisPorBitcoin;
+        usdInput.value = brlInput.value / usd.value;
 
 
     } else if (campo === 'usd') {
-        const usd = parseFloat(usdInput.value);
-        brlInput.value = usdInput.value / usd.value;
-
-        const brl = parseFloat(brlInput.value);
-        const bitcoin = brl / btcBrlInput;
-        bitcoinInput.value = bitcoin;
-        const satoshis = bitcoin * satoshisPorBitcoin;
-        satoshisInput.value = satoshis;
+        bitcoinInput.value = usdInput.value / ((btcBrl.value / usd.value));
+        satoshisInput.value = bitcoinInput.value * satoshisPorBitcoin;
+        brlInput.value = bitcoinInput.value * btcBrl.value;
     }
 
 
